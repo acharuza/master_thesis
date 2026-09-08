@@ -1,0 +1,33 @@
+# Environment
+.venv/
+uv.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables
+.env
+
+# Data (if applicable)
+data/*
+processed_data/*
+!data/.gitkeep
+!processed_data/.gitkeep
+
+checkpoints/*

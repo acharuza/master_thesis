@@ -1,0 +1,64 @@
+seed: 127
+
+experiment:
+  name: bigru_fusion_pretrain_127
+
+data:
+  train_waveforms: data\EchoNext_train_waveforms.npy
+  val_waveforms: data\EchoNext_val_waveforms.npy
+  metadata: data\echonext_metadata_100k.csv
+  batch_size: 128
+  num_workers: 12
+  pretrain: true
+
+  train_tabular: data\EchoNext_train_tabular_features.npy
+  val_tabular: data\EchoNext_val_tabular_features.npy
+
+model:
+  rnn_type: gru
+  hidden_dim: 128
+  num_layers: 1
+  dropout: 0.2
+
+  use_cnn: false
+
+  head_dropout: 0.3
+
+  cnn:
+    channels: [64, 128]
+    kernels: [7, 5]
+    dropout: 0.0
+
+tabular:
+  enabled: true
+  features:
+    - sex
+    - ventricular_rate
+    - atrial_rate
+    - pr_interval
+    - qrs_duration
+    - qt_corrected
+    - age_at_ecg
+  hidden_dim: 64
+  fusion_dim: 256
+  dropout: 0.4
+
+training:
+  device: cuda
+  epochs: 50
+
+  lr: 0.00025
+  weight_decay: 0.000015
+
+  gradient_clip: 1.0
+  amp: true
+  early_stopping_patience: 10
+  early_stopping_min_delta: 0.0005
+
+  scheduler:
+    type: reduce_on_plateau
+    factor: 0.2
+    patience: 5
+    min_lr: 0.000001
+
+loss: {}

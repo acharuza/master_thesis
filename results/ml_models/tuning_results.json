@@ -1,0 +1,113 @@
+{
+  "RandomForest": {
+    "best_params": {
+      "max_depth": null,
+      "min_samples_leaf": 1,
+      "min_samples_split": 10,
+      "n_estimators": 300
+    },
+    "best_val_score_mean": 0.6585170469178993,
+    "best_val_score_std": 0.0021170091255950374,
+    "val_score": "f1",
+    "seeds": [
+      25,
+      80,
+      44,
+      27,
+      35
+    ]
+  },
+  "ExtraTrees": {
+    "best_params": {
+      "max_depth": null,
+      "min_samples_leaf": 1,
+      "min_samples_split": 10,
+      "n_estimators": 300
+    },
+    "best_val_score_mean": 0.6543731312344424,
+    "best_val_score_std": 0.0019232530584753962,
+    "val_score": "f1",
+    "seeds": [
+      25,
+      80,
+      44,
+      27,
+      35
+    ]
+  },
+  "XGBoost": {
+    "best_params": {
+      "colsample_bytree": 1.0,
+      "learning_rate": 0.05,
+      "max_depth": 6,
+      "n_estimators": 400,
+      "reg_lambda": 1,
+      "subsample": 0.8
+    },
+    "best_val_score_mean": 0.6648919186733224,
+    "best_val_score_std": 0.002720178156238287,
+    "val_score": "f1",
+    "seeds": [
+      25,
+      80,
+      44,
+      27,
+      35
+    ]
+  },
+  "LGBM": {
+    "best_params": {
+      "bagging_fraction": 0.8,
+      "feature_fraction": 1.0,
+      "lambda_l2": 10,
+      "learning_rate": 0.05,
+      "max_depth": 6,
+      "n_estimators": 400,
+      "num_leaves": 63
+    },
+    "best_val_score_mean": 0.6644067796610169,
+    "best_val_score_std": 0.0,
+    "val_score": "f1",
+    "seeds": [
+      25,
+      80,
+      44,
+      27,
+      35
+    ]
+  },
+  "CatBoost": {
+    "best_params": {
+      "depth": 8,
+      "iterations": 400,
+      "l2_leaf_reg": 10,
+      "learning_rate": 0.05
+    },
+    "best_val_score_mean": 0.6619806861769932,
+    "best_val_score_std": 0.00031673417031108906,
+    "val_score": "f1",
+    "seeds": [
+      25,
+      80,
+      44,
+      27,
+      35
+    ]
+  },
+  "LogisticRegression": {
+    "best_params": {
+      "C": 0.01,
+      "penalty": "l2"
+    },
+    "best_val_score_mean": 0.64,
+    "best_val_score_std": 0.0,
+    "val_score": "f1",
+    "seeds": [
+      25,
+      80,
+      44,
+      27,
+      35
+    ]
+  }
+}
