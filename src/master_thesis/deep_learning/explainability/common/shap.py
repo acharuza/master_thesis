@@ -72,22 +72,18 @@ def compute_global_tabular_shap(
     background_indices=None,
     explain_indices=None,
 ):
-    """Compute SHAP values for tabular features across multiple patients."""
     if device is None:
         device = next(model.parameters()).device
-
     model.eval()
-
     if background_indices is None:
-        background_indices = range(min(100, len(dataset)))
+        background_indices = range(min(20, len(dataset)))
     if explain_indices is None:
         explain_indices = range(len(dataset))
 
-    background = np.stack([dataset[i]["tabular"].numpy() for i in background_indices])
-    background = torch.tensor(
-        background,
-        dtype=torch.float32,
-        device=device,
+    background = (
+        torch.stack([dataset[i]["tabular"] for i in background_indices])
+        .float()
+        .to(device)
     )
 
     all_shap_values = []
@@ -107,16 +103,14 @@ def compute_global_tabular_shap(
         explainer = shap.GradientExplainer(
             wrapped_model,
             background,
+            batch_size=256,
         )
-
         shap_values = explainer.shap_values(tabular)
 
         if isinstance(shap_values, list):
             shap_values = shap_values[0]
 
-        shap_values = np.asarray(shap_values)
-        # [1, features] -> [features]
-        shap_values = np.squeeze(shap_values)
+        shap_values = np.asarray(shap_values).squeeze()
         all_shap_values.append(shap_values)
         all_tabular_values.append(sample["tabular"].numpy())
         valid_indices.append(index)
