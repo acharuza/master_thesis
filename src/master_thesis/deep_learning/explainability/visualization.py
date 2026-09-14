@@ -364,19 +364,17 @@ def plot_cnn_grad_cam(
     figsize=(12, 10),
 ):
     """Visualize 1D CNN Grad-CAM for a single ECG."""
-
     if hasattr(waveform, "detach"):
         waveform = waveform.detach().cpu().numpy()
-    waveform = np.asarray(waveform)
 
+    waveform = np.asarray(waveform)
     if waveform.ndim == 3:
         if waveform.shape[0] != 1:
             raise ValueError("Expected a single ECG sample.")
         waveform = waveform[0]
-
     if waveform.ndim != 2:
         raise ValueError(
-            "Expected waveform shape [time, leads], " f"got {waveform.shape}."
+            f"Expected waveform shape [time, leads], got {waveform.shape}."
         )
 
     n_time, n_leads = waveform.shape
@@ -388,12 +386,10 @@ def plot_cnn_grad_cam(
         dtype=np.float32,
     )
     grad_cam = np.squeeze(grad_cam)
-
     if grad_cam.ndim != 1:
         raise ValueError(
             "Expected Grad-CAM to be one-dimensional, " f"got {grad_cam.shape}."
         )
-
     if len(grad_cam) != n_time:
         raise ValueError(
             "Grad-CAM and waveform have different temporal "
@@ -405,6 +401,7 @@ def plot_cnn_grad_cam(
         0,
     )
     max_value = np.max(grad_cam)
+
     if max_value > 0:
         grad_cam_norm = grad_cam / max_value
     else:
@@ -414,10 +411,12 @@ def plot_cnn_grad_cam(
         waveform,
         dtype=np.float32,
     )
+
     for lead_idx in range(n_leads):
         signal = waveform[:, lead_idx]
         signal_min = np.min(signal)
         signal_max = np.max(signal)
+
         if signal_max > signal_min:
             normalized_waveform[:, lead_idx] = (
                 2.0 * (signal - signal_min) / (signal_max - signal_min) - 1.0
@@ -425,20 +424,25 @@ def plot_cnn_grad_cam(
 
     fig = plt.figure(figsize=figsize)
     left = 0.13
-    width = 0.77
+    width = 0.72
     ax_ecg = fig.add_axes([left, 0.37, width, 0.55])
     ax_temporal = fig.add_axes([left, 0.10, width, 0.18])
 
     spacing = 2.8
     amplitude = 0.9
     time = np.arange(n_time)
-
     neutral_color = "black"
+
     grad_cam_cmap = plt.cm.Reds
+    color_norm = Normalize(
+        vmin=0,
+        vmax=1,
+    )
 
     for lead_idx in range(n_leads):
         lead_center = (n_leads - lead_idx - 1) * spacing
         y = normalized_waveform[:, lead_idx] * amplitude + lead_center
+
         ax_ecg.plot(
             time,
             y,
@@ -454,7 +458,7 @@ def plot_cnn_grad_cam(
             ax_ecg.plot(
                 time[t : t + 2],
                 y[t : t + 2],
-                color=grad_cam_cmap(0.25 + 0.70 * strength),
+                color=grad_cam_cmap(color_norm(strength)),
                 linewidth=1.8,
             )
 
@@ -485,6 +489,23 @@ def plot_cnn_grad_cam(
         axis="x",
         alpha=0.15,
     )
+
+    cbar_ax = fig.add_axes([0.88, 0.37, 0.025, 0.55])
+    sm = plt.cm.ScalarMappable(
+        cmap=grad_cam_cmap,
+        norm=color_norm,
+    )
+    sm.set_array([])
+    cbar = fig.colorbar(
+        sm,
+        cax=cbar_ax,
+    )
+    cbar.set_label(
+        "Normalized Grad-CAM activation",
+        fontsize=10,
+    )
+    cbar.set_ticks([0.0, 0.25, 0.5, 0.75, 1.0])
+
     ax_temporal.plot(
         time,
         grad_cam_norm,
